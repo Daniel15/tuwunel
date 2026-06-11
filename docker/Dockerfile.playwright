@@ -42,7 +42,12 @@ ENTRYPOINT tuwunel -Oserver_name=\""$SERVER_NAME\""
 # Playwright image already ships pinned Chromium / Firefox / WebKit and their
 # system deps. Pin its version via ARG.
 FROM mcr.microsoft.com/playwright:v1.60.0-noble AS playwright-base
-ARG element_web_ref="develop"
+# Pinned to a released element-web tag, not the floating `develop`, so the build
+# is deterministic. `develop` kept drifting its pnpm pin, Playwright version, and
+# acceptance suite, breaking the build out from under us. Bump deliberately to
+# track element-web; v1.12.21 ships Playwright 1.60.0 (matches the base image)
+# and pnpm 11.2.2 (relaxed to a warning above).
+ARG element_web_ref="v1.12.21"
 
 # corepack's bundled signing keys in this image are stale relative to current
 # pnpm releases; install pnpm directly via npm to sidestep that mismatch.
